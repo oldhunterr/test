@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة التمويل لبرنامج "تسهيل بلس"</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: rtl;
+            padding: 20px 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .calculator {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #a15cff 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 18px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #a15cff 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results {
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        th, td {
+            padding: 12px 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #4a3b69;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .info-section {
+            margin-top: 20px;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4a3b69;
+        }
+        
+        .highlight {
+            color: #a15cff;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            margin: 15px 0 10px;
+            color: #4a3b69;
+            font-weight: bold;
+            font-size: 18px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .summary-box {
+            background-color: #e9f7ef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .payment-period {
+            background-color: #f0e6ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .period-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4a3b69;
+        }
+        
+        .tab-container {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .tab {
+            background-color: inherit;
+            float: right;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            width: 50%;
+        }
+        
+        .tab:hover {
+            background-color: #ddd;
+        }
+        
+        .tab.active {
+            background-color: #4a3b69;
+            color: white;
+        }
+        
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            animation: fadeEffect 1s;
+        }
+        
+        @keyframes fadeEffect {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <div class="header">
+                مسارات التمويل لبرنامج "تسهيل بلس"
+            </div>
+            
+            <div class="form-group">
+                <label for="salary">أدخل الراتب الشهري (بالدينار):</label>
+                <input type="number" id="salary" min="600" max="2000" placeholder="أدخل راتبك هنا" required>
+            </div>
+            
+            <div class="form-group">
+                <button onclick="calculateLoan()">احسب التمويل</button>
+            </div>
+            
+            <div class="results">
+                <div id="result-message" style="text-align: center; margin-bottom: 15px; font-weight: bold; color: #4a3b69;"></div>
+                
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>فئة الدخل</th>
+                            <th>المسار الأول</th>
+                            <th>المسار الثاني</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Results will be populated here -->
+                    </tbody>
+                </table>
+                
+                <div id="detailed-results" style="display: none; margin-top: 30px;">
+                    <div class="tab-container">
+                        <button class="tab active" onclick="openTab(event, 'path1Details')">تفاصيل المسار الأول</button>
+                        <button class="tab" onclick="openTab(event, 'path2Details')">تفاصيل المسار الثاني</button>
+                    </div>
+                    
+                    <div id="path1Details" class="tabcontent" style="display: block;">
+                        <div class="section-title">تفاصيل الأقساط - المسار الأول</div>
+                        <div class="payment-period">
+                            <div class="period-title">السنوات 1-5 (معدل فائدة 20٪)</div>
+                            <div id="path1-period1"></div>
+                        </div>
+                        <div class="payment-period">
+                            <div class="period-title">السنوات 6-10 (معدل فائدة 25٪)</div>
+                            <div id="path1-period2"></div>
+                        </div>
+                        <div class="payment-period">
+                            <div class="period-title">السنوات 11-30 (معدل فائدة 30٪)</div>
+                            <div id="path1-period3"></div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="period-title">ملخص المسار الأول</div>
+                            <div id="path1-summary"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="path2Details" class="tabcontent">
+                        <div class="section-title">تفاصيل الأقساط - المسار الثاني</div>
+                        <div class="payment-period">
+                            <div class="period-title">السنوات 1-5 (معدل فائدة 25٪)</div>
+                            <div id="path2-period1"></div>
+                        </div>
+                        <div class="payment-period">
+                            <div class="period-title">السنوات 6-10 (معدل فائدة 30٪)</div>
+                            <div id="path2-period2"></div>
+                        </div>
+                        <div class="payment-period">
+                            <div class="period-title">السنوات 11-30 (معدل فائدة 35٪)</div>
+                            <div id="path2-period3"></div>
+                        </div>
+                        <div class="summary-box">
+                            <div class="period-title">ملخص المسار الثاني</div>
+                            <div id="path2-summary"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <div class="info-title">تفاصيل البرنامج:</div>
+                    <p>- مدة القرض: <span class="highlight">30 سنة</span></p>
+                    <p>- المسار الأول:</p>
+                    <ul>
+                        <li>20% من الراتب للسنوات الخمس الأولى</li>
+                        <li>25% من الراتب للسنوات الخمس التالية</li>
+                        <li>30% من الراتب للسنوات المتبقية (20 سنة)</li>
+                    </ul>
+                    <p>- المسار الثاني:</p>
+                    <ul>
+                        <li>25% من الراتب للسنوات الخمس الأولى</li>
+                        <li>30% من الراتب للسنوات الخمس التالية</li>
+                        <li>35% من الراتب للسنوات المتبقية (20 سنة)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load the pre-defined data from the image
+        const predefinedData = [
+            { salaryMin: 600, salaryMax: 800, path1: 57000, path2: 63000 },
+            { salaryMin: 800, salaryMax: 900, path1: 60793, path2: 68219 },
+            { salaryMin: 900, salaryMax: 1000, path1: 67548, path2: 75799 },
+            { salaryMin: 1000, salaryMax: 1100, path1: 74303, path2: 83379 },
+            { salaryMin: 1100, salaryMax: 1200, path1: 81000, path2: 91000 }
+        ];
+
+        function calculateLoan() {
+            const salary = parseFloat(document.getElementById('salary').value);
+            
+            if (isNaN(salary) || salary < 600) {
+                alert("الرجاء إدخال راتب صحيح (لا يقل عن 600 دينار)");
+                return;
+            }
+            
+            // Find the matching salary range
+            let matchingRange = null;
+            let loanPath1, loanPath2;
+            
+            for (const range of predefinedData) {
+                if (salary >= range.salaryMin && salary <= range.salaryMax) {
+                    matchingRange = range;
+                    loanPath1 = range.path1;
+                    loanPath2 = range.path2;
+                    break;
+                }
+            }
+            
+            const resultMessage = document.getElementById('result-message');
+            const resultsBody = document.getElementById('results-body');
+            const detailedResults = document.getElementById('detailed-results');
+            
+            // Clear previous results
+            resultsBody.innerHTML = '';
+            
+            if (matchingRange) {
+                resultMessage.textContent = `نتائج التمويل لراتب ${salary} دينار:`;
+                displayResults(salary, loanPath1, loanPath2, matchingRange);
+            } else if (salary > 1200) {
+                // Extrapolate for salaries over 1200
+                loanPath1 = Math.round(salary * 67.5); // Estimate
+                loanPath2 = Math.round(salary * 75.8); // Estimate
+                
+                resultMessage.textContent = `تقدير التمويل لراتب ${salary} دينار:`;
+                displayResults(salary, loanPath1, loanPath2);
+            } else {
+                resultMessage.textContent = "عذرًا، الراتب المدخل غير مؤهل للبرنامج";
+                detailedResults.style.display = 'none';
+                return;
+            }
+            
+            // Show detailed results
+            detailedResults.style.display = 'block';
+            
+            // Calculate and display detailed payment information
+            calculateDetailedPayments(salary, loanPath1, loanPath2);
+        }
+        
+        function displayResults(salary, loanPath1, loanPath2, matchingRange = null) {
+            const resultsBody = document.getElementById('results-body');
+            
+            const row = document.createElement('tr');
+            
+            if (matchingRange) {
+                row.innerHTML = `
+                    <td>${matchingRange.salaryMin} - ${matchingRange.salaryMax} دينار</td>
+                    <td>${loanPath1.toLocaleString()} دينار</td>
+                    <td>${loanPath2.toLocaleString()} دينار</td>
+                `;
+            } else {
+                row.innerHTML = `
+                    <td>${salary} دينار</td>
+                    <td>${loanPath1.toLocaleString()} دينار</td>
+                    <td>${loanPath2.toLocaleString()} دينار</td>
+                `;
+            }
+            
+            resultsBody.appendChild(row);
+        }
+        
+        function calculateDetailedPayments(salary, loanPath1, loanPath2) {
+            // Path 1 calculations (20%, 25%, 30%)
+            const path1Period1Monthly = salary * 0.20;
+            const path1Period2Monthly = salary * 0.25;
+            const path1Period3Monthly = salary * 0.30;
+            
+            const path1Period1Total = path1Period1Monthly * 12 * 5;
+            const path1Period2Total = path1Period2Monthly * 12 * 5;
+            const path1Period3Total = path1Period3Monthly * 12 * 20;
+            
+            const path1TotalPaid = path1Period1Total + path1Period2Total + path1Period3Total;
+            const path1Interest = path1TotalPaid - loanPath1;
+            
+            // Path 2 calculations (25%, 30%, 35%)
+            const path2Period1Monthly = salary * 0.25;
+            const path2Period2Monthly = salary * 0.30;
+            const path2Period3Monthly = salary * 0.35;
+            
+            const path2Period1Total = path2Period1Monthly * 12 * 5;
+            const path2Period2Total = path2Period2Monthly * 12 * 5;
+            const path2Period3Total = path2Period3Monthly * 12 * 20;
+            
+            const path2TotalPaid = path2Period1Total + path2Period2Total + path2Period3Total;
+            const path2Interest = path2TotalPaid - loanPath2;
+            
+            // Update UI with these calculations
+            document.getElementById('path1-period1').innerHTML = `
+                <p>القسط الشهري: <strong>${path1Period1Monthly.toFixed(2)} دينار</strong></p>
+                <p>إجمالي المدفوع خلال هذه الفترة: <strong>${path1Period1Total.toLocaleString()} دينار</strong></p>
+            `;
+            
+            document.getElementById('path1-period2').innerHTML = `
+                <p>القسط الشهري: <strong>${path1Period2Monthly.toFixed(2)} دينار</strong></p>
+                <p>إجمالي المدفوع خلال هذه الفترة: <strong>${path1Period2Total.toLocaleString()} دينار</strong></p>
+            `;
+            
+            document.getElementById('path1-period3').innerHTML = `
+                <p>القسط الشهري: <strong>${path1Period3Monthly.toFixed(2)} دينار</strong></p>
+                <p>إجمالي المدفوع خلال هذه الفترة: <strong>${path1Period3Total.toLocaleString()} دينار</strong></p>
+            `;
+            
+            document.getElementById('path1-summary').innerHTML = `
+                <p>مبلغ القرض: <strong>${loanPath1.toLocaleString()} دينار</strong></p>
+                <p>إجمالي المدفوع خلال 30 سنة: <strong>${path1TotalPaid.toLocaleString()} دينار</strong></p>
+                <p>إجمالي الفوائد المدفوعة: <strong>${path1Interest.toLocaleString()} دينار</strong></p>
+                <p>نسبة الفائدة الإجمالية: <strong>${((path1Interest / loanPath1) * 100).toFixed(2)}%</strong></p>
+            `;
+            
+            document.getElementById('path2-period1').innerHTML = `
+                <p>القسط الشهري: <strong>${path2Period1Monthly.toFixed(2)} دينار</strong></p>
+                <p>إجمالي المدفوع خلال هذه الفترة: <strong>${path2Period1Total.toLocaleString()} دينار</strong></p>
+            `;
+            
+            document.getElementById('path2-period2').innerHTML = `
+                <p>القسط الشهري: <strong>${path2Period2Monthly.toFixed(2)} دينار</strong></p>
+                <p>إجمالي المدفوع خلال هذه الفترة: <strong>${path2Period2Total.toLocaleString()} دينار</strong></p>
+            `;
+            
+            document.getElementById('path2-period3').innerHTML = `
+                <p>القسط الشهري: <strong>${path2Period3Monthly.toFixed(2)} دينار</strong></p>
+                <p>إجمالي المدفوع خلال هذه الفترة: <strong>${path2Period3Total.toLocaleString()} دينار</strong></p>
+            `;
+            
+            document.getElementById('path2-summary').innerHTML = `
+                <p>مبلغ القرض: <strong>${loanPath2.toLocaleString()} دينار</strong></p>
+                <p>إجمالي المدفوع خلال 30 سنة: <strong>${path2TotalPaid.toLocaleString()} دينار</strong></p>
+                <p>إجمالي الفوائد المدفوعة: <strong>${path2Interest.toLocaleString()} دينار</strong></p>
+                <p>نسبة الفائدة الإجمالية: <strong>${((path2Interest / loanPath2) * 100).toFixed(2)}%</strong></p>
+            `;
+        }
+        
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        // Initialize the table with all predefined data
+        window.onload = function() {
+            const resultsBody = document.getElementById('results-body');
+            predefinedData.forEach(range => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${range.salaryMin} - ${range.salaryMax} دينار</td>
+                    <td>${range.path1.toLocaleString()} دينار</td>
+                    <td>${range.path2.toLocaleString()} دينار</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+        };
+    </script>
+</body>
+</html>
